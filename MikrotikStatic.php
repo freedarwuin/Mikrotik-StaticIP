@@ -1,11 +1,12 @@
 <?php
 
 /**
- *  PHP Mikrotik Billing (https://github.com/hotspotbilling/phpnuxbill/)
- *  by https://t.me/ibnux
- *
- * This is Core, don't modification except you want to contribute
- * better create new plugin
+* PHP Mikrotik Billing (https://github.com/freedarwuin/NetBillX/)
+* Por freedarwuin
+
+* Este es el núcleo del sistema, no lo modifiques a menos que quieras contribuir.
+* Es mejor crear un nuevo plugin para cambios o mejoras.
+
  **/
 
 use PEAR2\Net\RouterOS;
@@ -17,12 +18,12 @@ class MikrotikStatic
     {
         return [
             'title' => 'Mikrotik STATIC',
-            'description' => 'To handle connection between PHPNuxBill with Mikrotik STATIC',
-            'author' => 'Gerandonk',
+            'description' => 'Para manejar la conexión entre NetBillX y Mikrotik STATIC',
+            'author' => 'freedarwuin',
             'url' => [
-                'Github' => 'https://github.com/gerandonk/Mikrotik-StaticIP',
-                'Telegram' => 'https://t.me/sklitinov',
-                'Donate' => 'https://paypal.me/sklitinov'
+                'Github' => 'https://github.com/freedarwuin/Mikrotik-StaticIP',
+                'Telegram' => 'https://t.me/',
+                'Donate' => 'https://paypal.me/'
             ]
         ];
     }
@@ -35,7 +36,7 @@ class MikrotikStatic
         $cid = self::getIdByCustomer($customer, $client);
         $isExp = ORM::for_table('tbl_plans')->select("id")->where('plan_expired', $plan['id'])->find_one();
         if (empty($cid)) {
-            //customer not exists, add it
+            //El cliente no existe, agregarlo
             $this->addStaticUser($client, $plan, $customer, $isExp);
         }else{
 			$bw = ORM::for_table("tbl_bandwidth")->find_one($plan['id_bw']);
@@ -90,12 +91,12 @@ class MikrotikStatic
         }
     }
 
-    // customer change username
+    // Cambio de nombre de usuario del cliente
     public function change_username($plan, $from, $to)
     {
         $mikrotik = $this->info($plan['routers']);
         $client = $this->getClient($mikrotik['ip_address'], $mikrotik['username'], $mikrotik['password']);
-        //check if customer exists
+        //Verificar si el cliente existe
         $printRequest = new RouterOS\Request('/queue/simple/print');
         $printRequest->setQuery(RouterOS\Query::where('name', $from));
         $cid = $client->sendSync($printRequest)->getProperty('.id');
@@ -112,7 +113,7 @@ class MikrotikStatic
     }
 
     /**
-     * Function to ID by username from Mikrotik
+     * Función para obtener el ID por nombre de usuario desde Mikrotik
      */
     function getIdByCustomer($customer, $client){
         $printRequest = new RouterOS\Request('/queue/simple/print');
